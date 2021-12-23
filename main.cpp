@@ -7,12 +7,13 @@
 #include"VAO.h"
 #include"VBO.h"
 #include"EBO.h"
+#include"texture.h"
 
 // Vertices Coordinates [-1 to 1].
 float vertices[] = {
 	// positions         // colors          // tex coord
-	-0.5f, -0.5f, 0.0f,  1.0f, 0.0f, 0.0f,  1.0f, 0.0f, 
-	0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,  0.0f, 0.0f,
+	-0.5f, -0.5f, 0.0f,  1.0f, 0.0f, 0.0f,  0.0f, 0.0f, 
+	0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,  1.0f, 0.0f,
 	0.5f, 0.5f, 0.0f,    0.0f, 0.0f, 1.0f,  1.0f, 1.0f,
 	-0.5f, 0.5f, 0.0f,   1.0f, 1.0f, 1.0f,  0.0f, 1.0f,
 	 
@@ -68,40 +69,20 @@ int main() {
 	EBO EBO1(indices, sizeof(indices));
 
 	// Links VBO to VAO
-	VAO1.LinkAttrib(VBO1, 0, 3, GL_FLOAT, 6 * sizeof(float), (void*)0);
-	VAO1.LinkAttrib(VBO1, 1, 3, GL_FLOAT, 6 * sizeof(float), (void*)(3 * sizeof(float)));
-	VAO1.LinkAttrib(VBO1, 2, 2, GL_FLOAT, 6 * sizeof(float), (void*)(6 * sizeof(float)));
+	VAO1.LinkAttrib(VBO1, 0, 3, GL_FLOAT, 8 * sizeof(float), (void*)0);
+	VAO1.LinkAttrib(VBO1, 1, 3, GL_FLOAT, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+	VAO1.LinkAttrib(VBO1, 2, 2, GL_FLOAT, 8 * sizeof(float), (void*)(6 * sizeof(float)));
 	// Unbind all to prevent accidentally modifying them
 	VAO1.Unbind();
 	VBO1.Unbind();
 	EBO1.Unbind();
 
 	// Textures! //
-	int imgW, imgH, numColCh;
-	unsigned char* bytes = stbi_load("sampleTex.png", &imgW, &imgH, &numColCh, 0);
-	// Create tex obj
-	GLuint texture;
-	glGenTextures(1, &texture);
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, texture);
-	// Tex settings
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	// Generate tex
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, imgW, imgH, 0, GL_RGBA, GL_UNSIGNED_BYTE, bytes);
-	glGenerateMipmap(GL_TEXTURE_2D);
-	// Free tex data
-	stbi_image_free(bytes);
-	glBindTexture(GL_TEXTURE_2D, 0);
+	Texture sampleTex("testTex.jpeg", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGB, GL_UNSIGNED_BYTE);
+	sampleTex.texUnit(shaderProgram, "tex0", 0);
 
 	// Uniforms! //
 	GLuint uniID = glGetUniformLocation(shaderProgram.ID, "scale");
-	GLuint uniTex0 = glGetUniformLocation(shaderProgram.ID, "tex0");
-	shaderProgram.Activate();
-	glUniform1i(uniTex0, 0);
-
 
 	// Use a while loop to keep the window open.
 	while (!glfwWindowShouldClose(window)) {
@@ -116,7 +97,7 @@ int main() {
 		// Pass Uniforms 
 		float timeValue = glfwGetTime();
 		glUniform1f(uniID, 0.5 + 0.2 * sin(timeValue));
-		glBindTexture(GL_TEXTURE_2D, texture);
+		sampleTex.Bind();
 
 		// Bind VAO and draw the triangle, updating it.
 		VAO1.Bind();
@@ -132,7 +113,7 @@ int main() {
 	VAO1.Delete();
 	VBO1.Delete();
 	EBO1.Delete();
-	glDeleteTextures(1, &texture);
+	sampleTex.Delete();
 	shaderProgram.Delete();
 
 	// Terminate window and end program.
