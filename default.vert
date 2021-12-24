@@ -6,12 +6,10 @@ out vec4 colour;
 out vec2 texCoord;
 
 uniform float scale;
-uniform mat4 model;
-uniform mat4 view;
-uniform mat4 proj;
+uniform mat4 camMatrix;
 
 void main() {
-   gl_Position = proj * view * model * vec4(aPos * scale, 1.0f); //vec4(aPos * scale, 1.0);
+   gl_Position = camMatrix * vec4(aPos * scale, 1.0f); //vec4(aPos * scale, 1.0);
    colour = vec4(aColour, 1.0);
    texCoord = aTex;
 }

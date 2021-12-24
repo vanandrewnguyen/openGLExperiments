@@ -12,6 +12,7 @@
 #include"VBO.h"
 #include"EBO.h"
 #include"texture.h"
+#include"camera.h"
 
 // Vertices coordinates
 GLfloat vertices[] =
@@ -34,7 +35,7 @@ GLuint indices[] =
 	3, 0, 4
 };
 
-/*
+/* Square coords
 // Vertices Coordinates [-1 to 1].
 float vertices[] = {
 	// positions         // colors          // tex coord
@@ -114,9 +115,9 @@ int main() {
 	glfwSwapInterval(1);
 	glEnable(GL_DEPTH_TEST);
 
-	// Transformation Variables
-	float rotation = 1.0f;
-	double prevTime = glfwGetTime();
+	// Camera! //
+	Camera camera(windowWidth, windowHeight, glm::vec3(0.0f, 0.0f, 2.0f));
+
 
 	// Use a while loop to keep the window open.
 	while (!glfwWindowShouldClose(window)) {
@@ -132,20 +133,19 @@ int main() {
 		double currTime = glfwGetTime();
 		glUniform1f(uniID, 0.9 + 0.1 * sin(currTime));
 		sampleTex.Bind();
-		
-		// Rotation for model 
-		if (currTime - prevTime >= 1 / 60) {
-			rotation += 0.4f;
-			prevTime = currTime;
-		}
 
+		// Camera
+		float minSteps = 0.1f;
+		float maxSteps = 100.0f;
+		float fov = 45.0f;
+		camera.Matrix(fov, minSteps, maxSteps, shaderProgram, "camMatrix");
+		camera.Inputs(window);
+		
+		/*
 		// Matrices (3D Projection)
 		glm::mat4 model = glm::mat4(1.0f);
 		glm::mat4 view = glm::mat4(1.0f);
 		glm::mat4 proj = glm::mat4(1.0f);
-		float minSteps = 0.1f;
-		float maxSteps = 100.0f;
-		float fov = 45.0f;
 		// Move the view/proj/model a bit - we move the viewer rather than the object
 		model = glm::rotate(model, glm::radians(rotation), glm::vec3(0.0f, 1.0f, 0.0f));
 		view = glm::translate(view, glm::vec3(0.0f, -0.5f, -2.0f));
@@ -157,7 +157,8 @@ int main() {
 		glUniformMatrix4fv(viewLocation, 1, GL_FALSE, glm::value_ptr(view));
 		int projLocation = glGetUniformLocation(shaderProgram.ID, "proj");
 		glUniformMatrix4fv(projLocation, 1, GL_FALSE, glm::value_ptr(proj));
-
+		*/
+		
 		// Bind VAO and draw the triangle, updating it.
 		VAO1.Bind();
 		//glDrawArrays(GL_TRIANGLES, 0, 6);
