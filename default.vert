@@ -8,14 +8,14 @@ out vec2 texCoord;
 out vec3 Normal;
 out vec3 currPos;
 
-uniform float scale;
+uniform float slide; // be careful since you're not using this atm, could lead to some errors
 uniform mat4 camMatrix;
 uniform mat4 model;
 
 void main() {
     currPos = vec3(model * vec4(aPos, 1.0f));
     
-    gl_Position = camMatrix * vec4(currPos * scale, 1.0f); //vec4(aPos * scale, 1.0);
+    gl_Position = camMatrix * vec4(currPos, 1.0f); //vec4(aPos * scale, 1.0);
     color = aColor;
     texCoord = aTex;
     Normal = aNormal;

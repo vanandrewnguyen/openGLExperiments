@@ -87,5 +87,14 @@
     <Image Include="testTex.jpeg">
       <Filter>Resource Files\Textures</Filter>
     </Image>
+    <Image Include="sandBrickTexture.jpeg">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="iceTexture.jpeg">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="iceSpecTexture.jpeg">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
   </ItemGroup>
 </Project>

@@ -14,7 +14,8 @@
 #include"texture.h"
 #include"camera.h"
 
-// Vertices coordinates
+/*
+// Vertices coordinates (Pyramid)
 GLfloat vertices[] =
 { //     COORDINATES     /        COLORS          /    TexCoord   /        NORMALS       //
 	-0.5f, 0.0f,  0.5f,     0.83f, 0.70f, 0.44f, 	 0.0f, 0.0f,      0.0f, -1.0f, 0.0f, // Bottom side
@@ -48,6 +49,23 @@ GLuint indices[] =
 	7, 9, 8, // Non-facing side
 	10, 12, 11, // Right side
 	13, 15, 14 // Facing side
+};
+*/
+
+// Vertices coordinates (Plane)
+GLfloat vertices[] =
+{ //     COORDINATES     /           COLORS        /      TexCoord    /      NORMALS     //
+	-1.0f, -0.2f,  1.0f,		0.0f, 0.0f, 0.0f,		0.0f, 0.0f,		0.0f, 1.0f, 0.0f,
+	-1.0f, -0.2f, -1.0f,		0.0f, 0.0f, 0.0f,		0.0f, 1.0f,		0.0f, 1.0f, 0.0f,
+	 1.0f, -0.2f, -1.0f,		0.0f, 0.0f, 0.0f,		1.0f, 1.0f,		0.0f, 1.0f, 0.0f,
+	 1.0f, -0.2f,  1.0f,		0.0f, 0.0f, 0.0f,		1.0f, 0.0f,		0.0f, 1.0f, 0.0f
+};
+
+// Indices for vertices order
+GLuint indices[] =
+{
+	0, 1, 2,
+	0, 2, 3
 };
 
 GLfloat lightVertices[] =
@@ -94,7 +112,7 @@ int main() {
 	// Init window creation. 
 	int windowHeight = 800;
 	int windowWidth = 800;
-	const char* windowName = "Hello World!";
+	const char* windowName = "OpenGL Test";
 	GLFWwindow* window = glfwCreateWindow(windowHeight, windowWidth, windowName, NULL, NULL);
 	if (window == NULL) {
 		std::cout << "Failed to create a GLFW Window." << std::endl;
@@ -160,13 +178,14 @@ int main() {
 	glUniform4f(glGetUniformLocation(shaderProgram.ID, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
 	glUniform3f(glGetUniformLocation(shaderProgram.ID, "lightPos"), lightPos.x, lightPos.y, lightPos.z);
 
-
 	// Textures! //
-	Texture sampleTex("testTex.jpeg", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGB, GL_UNSIGNED_BYTE);
+	Texture sampleTex("iceTexture.jpeg", GL_TEXTURE_2D, 0, GL_RGB, GL_UNSIGNED_BYTE);
 	sampleTex.texUnit(shaderProgram, "tex0", 0);
+	Texture sampleSpecTex("iceSpecTexture.jpeg", GL_TEXTURE_2D, 1, GL_RED, GL_UNSIGNED_BYTE);
+	sampleSpecTex.texUnit(shaderProgram, "tex1", 1);
 
 	// Uniforms! //
-	GLuint uniID = glGetUniformLocation(shaderProgram.ID, "scale");
+	GLuint uniID = glGetUniformLocation(shaderProgram.ID, "slide");
 
 	// Vsync & Depth test
 	glfwSwapInterval(1);
@@ -182,7 +201,7 @@ int main() {
 		processInput(window);
 
 		// Rendering Commands //
-		glClearColor(0.07f, 0.13f, 0.17f, 1.0f);
+		glClearColor(0.0f, 0.0f, 0.0f, 1.0f); //0.07f, 0.13f, 0.17f
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		shaderProgram.Activate();
 
@@ -197,8 +216,9 @@ int main() {
 
 		// Pass Scale Uniforms 
 		double currTime = glfwGetTime();
-		glUniform1f(uniID, 0.9 + 0.1 * sin(currTime));
+		glUniform1f(uniID, 0.5 * sin(currTime));
 		sampleTex.Bind();
+		sampleSpecTex.Bind();
 
 		// Bind VAO and draw the triangle, updating it.
 		VAO1.Bind();

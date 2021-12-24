@@ -170,6 +170,9 @@
     <None Include="light.vert" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="iceSpecTexture.jpeg" />
+    <Image Include="iceTexture.jpeg" />
+    <Image Include="sandBrickTexture.jpeg" />
     <Image Include="testTex.jpeg" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
