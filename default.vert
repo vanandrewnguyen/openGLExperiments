@@ -13,9 +13,11 @@ uniform mat4 camMatrix;
 uniform mat4 model;
 
 void main() {
+    // Update current position
     currPos = vec3(model * vec4(aPos, 1.0f));
     
-    gl_Position = camMatrix * vec4(currPos, 1.0f); //vec4(aPos * scale, 1.0);
+    // Output the variables and position
+    gl_Position = camMatrix * vec4(currPos, 1.0f);
     color = aColor;
     texCoord = aTex;
     Normal = aNormal;

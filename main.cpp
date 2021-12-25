@@ -55,10 +55,10 @@ GLuint indices[] =
 // Vertices coordinates (Plane)
 GLfloat vertices[] =
 { //     COORDINATES     /           COLORS        /      TexCoord    /      NORMALS     //
-	-1.0f, -0.2f,  1.0f,		0.0f, 0.0f, 0.0f,		0.0f, 0.0f,		0.0f, 1.0f, 0.0f,
-	-1.0f, -0.2f, -1.0f,		0.0f, 0.0f, 0.0f,		0.0f, 1.0f,		0.0f, 1.0f, 0.0f,
-	 1.0f, -0.2f, -1.0f,		0.0f, 0.0f, 0.0f,		1.0f, 1.0f,		0.0f, 1.0f, 0.0f,
-	 1.0f, -0.2f,  1.0f,		0.0f, 0.0f, 0.0f,		1.0f, 0.0f,		0.0f, 1.0f, 0.0f
+	-2.0f, -0.2f,  2.0f,		0.0f, 0.0f, 0.0f,		0.0f, 0.0f,		0.0f, 1.0f, 0.0f,
+	-2.0f, -0.2f, -2.0f,		0.0f, 0.0f, 0.0f,		0.0f, 1.0f,		0.0f, 1.0f, 0.0f,
+	 2.0f, -0.2f, -2.0f,		0.0f, 0.0f, 0.0f,		1.0f, 1.0f,		0.0f, 1.0f, 0.0f,
+	 2.0f, -0.2f,  2.0f,		0.0f, 0.0f, 0.0f,		1.0f, 0.0f,		0.0f, 1.0f, 0.0f
 };
 
 // Indices for vertices order
@@ -160,7 +160,7 @@ int main() {
 	lightVAO.Unbind();
 	lightVBO.Unbind();
 	lightEBO.Unbind();
-
+	// We create light position, colours, model and pass it all to the light shader.
 	glm::vec4 lightColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 	glm::vec3 lightPos = glm::vec3(0.5f, 0.5f, 0.5f);
 	glm::mat4 lightModel = glm::mat4(1.0f);
@@ -193,7 +193,6 @@ int main() {
 
 	// Camera! //
 	Camera camera(windowWidth, windowHeight, glm::vec3(0.0f, 0.0f, 2.0f));
-
 
 	// Use a while loop to keep the window open.
 	while (!glfwWindowShouldClose(window)) {

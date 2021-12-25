@@ -4,5 +4,6 @@ out vec4 FragColor;
 uniform vec4 lightColor;
 
 void main() {
+	// Pass light colour 
 	FragColor = lightColor;
 }
