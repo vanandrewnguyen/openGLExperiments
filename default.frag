@@ -1,12 +1,12 @@
 #version 330 core
 out vec4 FragColor;
-in vec3 color; // the input variable from the vertex shader (same name and same type)
-in vec2 texCoord;
+in vec3 currPos; // the input variable from the vertex shader (same name and same type)
 in vec3 Normal;
-in vec3 currPos;
+in vec3 color; 
+in vec2 texCoord;
 
-uniform sampler2D tex0;
-uniform sampler2D tex1;
+uniform sampler2D diffuse0;
+uniform sampler2D specular0;
 uniform vec4 lightColor;
 uniform vec3 lightPos;
 uniform vec3 camPos;
@@ -39,7 +39,7 @@ vec4 pointLight() {
 	float specular = specAmount * specularIntensity;
 
 	float lighting = diffuse * intensity + ambient;
-	return lightColor * (lighting * texture(tex0, texCoord) + (specular * intensity) * texture(tex1, texCoord).r);
+	return lightColor * (lighting * texture(diffuse0, texCoord) + (specular * intensity) * texture(specular0, texCoord).r);
 }
 
 vec4 directionalLight() {
@@ -62,7 +62,7 @@ vec4 directionalLight() {
 	float specular = specAmount * specularIntensity;
 
 	float lighting = diffuse + ambient;
-	return lightColor * (lighting * texture(tex0, texCoord) + specular * texture(tex1, texCoord).r);
+	return lightColor * (lighting * texture(diffuse0, texCoord) + specular * texture(specular0, texCoord).r);
 }
 
 vec4 spotLight() {
@@ -89,7 +89,7 @@ vec4 spotLight() {
 	float intensity = clamp((angle - outerCone) / (innerCone - outerCone), 0.0f, 1.0f);
 
 	float lighting = diffuse * intensity + ambient;
-	return lightColor * (lighting * texture(tex0, texCoord) + (specular * intensity) * texture(tex1, texCoord).r);
+	return lightColor * (lighting * texture(diffuse0, texCoord) + (specular * intensity) * texture(specular0, texCoord).r);
 }
 
 void main() {
