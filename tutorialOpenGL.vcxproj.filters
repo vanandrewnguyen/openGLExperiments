@@ -88,11 +88,14 @@
     <None Include="light.vert">
       <Filter>Resource Files\Shaders</Filter>
     </None>
+    <None Include="skybox.vert">
+      <Filter>Resource Files\Shaders</Filter>
+    </None>
+    <None Include="skybox.frag">
+      <Filter>Resource Files\Shaders</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="testTex.jpeg">
-      <Filter>Resource Files\Textures</Filter>
-    </Image>
     <Image Include="sandBrickTexture.jpeg">
       <Filter>Resource Files\Textures</Filter>
     </Image>
@@ -100,6 +103,24 @@
       <Filter>Resource Files\Textures</Filter>
     </Image>
     <Image Include="iceSpecTexture.jpeg">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="py.jpeg">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="pz.jpeg">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="nx.jpeg">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="ny.jpeg">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="nz.jpeg">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="px.jpeg">
       <Filter>Resource Files\Textures</Filter>
     </Image>
   </ItemGroup>

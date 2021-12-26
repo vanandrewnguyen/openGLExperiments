@@ -170,12 +170,19 @@
     <None Include="default.vert" />
     <None Include="light.frag" />
     <None Include="light.vert" />
+    <None Include="skybox.frag" />
+    <None Include="skybox.vert" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="iceSpecTexture.jpeg" />
     <Image Include="iceTexture.jpeg" />
+    <Image Include="nx.jpeg" />
+    <Image Include="ny.jpeg" />
+    <Image Include="nz.jpeg" />
+    <Image Include="px.jpeg" />
+    <Image Include="py.jpeg" />
+    <Image Include="pz.jpeg" />
     <Image Include="sandBrickTexture.jpeg" />
-    <Image Include="testTex.jpeg" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
