@@ -40,6 +40,7 @@ void Mesh::Draw
 	// Keep track of how many of each type of textures we have
 	unsigned int numDiffuse = 0;
 	unsigned int numSpecular = 0;
+	unsigned int numNormal = 0;
 
 	for (unsigned int i = 0; i < textures.size(); i++) {
 		// These keep track of the current texture
@@ -51,6 +52,8 @@ void Mesh::Draw
 			num = std::to_string(numDiffuse++); // increment by one, but save it as a string
 		} else if (type == "specular") {
 			num = std::to_string(numSpecular++);
+		} else if (type == "normal") {
+			num = std::to_string(numNormal++);
 		}
 		// Pass uniform
 		textures[i].texUnit(shader, (type + num).c_str(), i); // e.g. diffuse0 specular0 diffuse1 diffuse2 etc

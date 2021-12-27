@@ -2,21 +2,51 @@
 #include"mesh.h"
 
 // Vertices coordinates (Plane)
-float pSize = 4.0f;
-float pDepth = 2.0f;
+/*
+float pSize = 1.0f;
+float pDepth = 1.0f;
 Vertex vertices[] =
 { //               COORDINATES           /            COLORS          /       NORMALS              /       TexCoord         //
-	Vertex{glm::vec3(-pSize, -pDepth,  pSize), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(0.0f, 0.0f)},
-	Vertex{glm::vec3(-pSize, -pDepth, -pSize), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(0.0f, 1.0f)},
-	Vertex{glm::vec3(pSize, -pDepth, -pSize),  glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(1.0f, 1.0f)},
-	Vertex{glm::vec3(pSize, -pDepth,  pSize),  glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(1.0f, 0.0f)}
+	Vertex{glm::vec3(-pSize, pSize, -pDepth), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(0.0f, 0.0f)},
+	Vertex{glm::vec3(-pSize, -pSize, -pDepth), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(0.0f, 1.0f)},
+	Vertex{glm::vec3(pSize, -pSize, -pDepth),  glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(1.0f, 1.0f)},
+	Vertex{glm::vec3(pSize, pSize, -pDepth),  glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(1.0f, 0.0f)}
+}; */
+float pSize = 0.5f;
+glm::vec3 pOffset = glm::vec3(0.0f, 0.0f, -2.0f);
+Vertex vertices[] =
+{ //               COORDINATES           /                        COLORS          /             NORMALS           /        TexCoord         //
+	Vertex{glm::vec3(-pSize, -pSize, -pSize) + pOffset, glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(0.0f, 0.0f)},
+	Vertex{glm::vec3(pSize, -pSize, -pSize) + pOffset, glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(1.0f, 0.0f)},
+	Vertex{glm::vec3(pSize, -pSize, pSize) + pOffset, glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(0.0f, 1.0f)},
+	Vertex{glm::vec3(-pSize, -pSize, pSize) + pOffset, glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(1.0f, 1.0f)},
+	Vertex{glm::vec3(-pSize, pSize, -pSize) + pOffset, glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(0.0f, 1.0f)},
+	Vertex{glm::vec3(pSize, pSize, -pSize) + pOffset, glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(1.0f, 1.0f)},
+	Vertex{glm::vec3(pSize, pSize, pSize) + pOffset, glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(0.0f, 0.0f)},
+	Vertex{glm::vec3(-pSize, pSize, pSize) + pOffset, glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(1.0f, 0.0f)}
 };
 
 // Indices for vertices order
 GLuint indices[] =
 {
-	0, 1, 2,
-	0, 2, 3
+	// Right
+	1, 2, 6,
+	6, 5, 1,
+	// Left
+	0, 4, 7,
+	7, 3, 0,
+	// Top
+	4, 5, 6,
+	6, 7, 4,
+	// Bottom
+	0, 3, 2,
+	2, 1, 0,
+	// Back
+	0, 1, 5,
+	5, 4, 0,
+	// Front
+	3, 7, 6,
+	6, 2, 3
 };
 
 float lSize = 0.1f;
@@ -119,7 +149,8 @@ int main() {
 	// Import textures in an array
 	Texture textures[]{
 		Texture("iceTexture.jpeg", "diffuse", 0, GL_RGB, GL_UNSIGNED_BYTE),
-		Texture("iceSpecTexture.jpeg", "specular", 1, GL_RED, GL_UNSIGNED_BYTE)
+		Texture("iceSpecTexture.jpeg", "specular", 1, GL_RED, GL_UNSIGNED_BYTE),
+		Texture("iceNormTexture.jpeg", "normal", 2, GL_RGB, GL_UNSIGNED_BYTE)
 	};
 
 	// Generates Shader object using shaders defualt.vert and default.frag
@@ -212,9 +243,6 @@ int main() {
 		}
 	}
 
-	// Uniforms! //
-	GLuint uniID = glGetUniformLocation(shaderProgram.ID, "slide");
-
 	// Vsync & Depth test
 	glfwSwapInterval(1);
 	glEnable(GL_DEPTH_TEST);
@@ -230,6 +258,8 @@ int main() {
 		// Rendering Commands //
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f); //0.07f, 0.13f, 0.17f
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		// Uniforms! //
 
 		// Camera
 		float minSteps = 0.1f;
@@ -262,7 +292,6 @@ int main() {
 		glBindVertexArray(0);
 		// Switch back to the normal depth function
 		glDepthFunc(GL_LESS);
-
 
 		// Update (by swapping each frame)
 		glfwSwapBuffers(window); 
