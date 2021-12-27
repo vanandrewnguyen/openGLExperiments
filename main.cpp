@@ -150,7 +150,8 @@ int main() {
 	Texture textures[]{
 		Texture("iceTexture.jpeg", "diffuse", 0, GL_RGB, GL_UNSIGNED_BYTE),
 		Texture("iceSpecTexture.jpeg", "specular", 1, GL_RED, GL_UNSIGNED_BYTE),
-		Texture("iceNormTexture.jpeg", "normal", 2, GL_RGB, GL_UNSIGNED_BYTE)
+		Texture("iceNormTexture.jpeg", "normal", 2, GL_RGB, GL_UNSIGNED_BYTE),
+		Texture("iceSpecTexture.jpeg", "displacement", 3, GL_RED, GL_UNSIGNED_BYTE)
 	};
 
 	// Generates Shader object using shaders defualt.vert and default.frag
