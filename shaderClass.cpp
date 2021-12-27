@@ -1,5 +1,7 @@
 #include"shaderClass.h"
 
+// See https://github.com/VictorGordan/opengl-tutorials
+
 // Reads a text file and outputs a string with everything in the text file
 std::string get_file_contents(const char* filename) {
 	std::ifstream in(filename, std::ios::binary);

@@ -12,6 +12,7 @@ Vertex vertices[] =
 	Vertex{glm::vec3(pSize, -pSize, -pDepth),  glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(1.0f, 1.0f)},
 	Vertex{glm::vec3(pSize, pSize, -pDepth),  glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(1.0f, 0.0f)}
 }; */
+
 float pSize = 0.5f;
 glm::vec3 pOffset = glm::vec3(0.0f, 0.0f, -2.0f);
 Vertex vertices[] =
@@ -29,22 +30,16 @@ Vertex vertices[] =
 // Indices for vertices order
 GLuint indices[] =
 {
-	// Right
 	1, 2, 6,
 	6, 5, 1,
-	// Left
 	0, 4, 7,
 	7, 3, 0,
-	// Top
 	4, 5, 6,
 	6, 7, 4,
-	// Bottom
 	0, 3, 2,
 	2, 1, 0,
-	// Back
 	0, 1, 5,
 	5, 4, 0,
-	// Front
 	3, 7, 6,
 	6, 2, 3
 };
@@ -119,15 +114,15 @@ void processInput(GLFWwindow* window);
 
 // Main
 int main() {
-	// Init GLFW Library.
+	// Init GLFW Library
 	glfwInit();
 
-	// Tell GLFW which versions of OpenGL we will use, and which profile to use.
+	// Tell GLFW which versions of OpenGL we will use, and which profile to use
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-	// Init window creation. 
+	// Init window creation
 	int windowHeight = 800;
 	int windowWidth = 800;
 	const char* windowName = "OpenGL Test";
@@ -138,10 +133,10 @@ int main() {
 		return -1;
 	}
 
-	// Set window as target.
+	// Set window as target
 	glfwMakeContextCurrent(window);
 
-	// Load OpenGL.
+	// Load OpenGL
 	gladLoadGL();
 	glViewport(0, 0, windowHeight, windowWidth);
 
@@ -175,11 +170,11 @@ int main() {
 	glm::vec3 lightPos = glm::vec3(0.5f, 0.5f, 0.5f);
 	glm::mat4 lightModel = glm::mat4(1.0f);
 	lightModel = glm::translate(lightModel, lightPos);
-
+	// Object model and position
 	glm::vec3 objectPos = glm::vec3(0.0f, 0.0f, 0.0f);
 	glm::mat4 objectModel = glm::mat4(1.0f);
 	objectModel = glm::translate(objectModel, objectPos);
-
+	// Activate both shaders and pass uniforms
 	lightShader.Activate();
 	glUniformMatrix4fv(glGetUniformLocation(lightShader.ID, "model"), 1, GL_FALSE, glm::value_ptr(lightModel));
 	glUniform4f(glGetUniformLocation(lightShader.ID, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
@@ -207,7 +202,7 @@ int main() {
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-	// All the faces of the cubemap 
+	// All the faces of the cubemap as images
 	std::string facesCubemap[6] =
 	{
 		"px.jpeg",
@@ -221,13 +216,12 @@ int main() {
 	unsigned int cubemapTexture;
 	glGenTextures(1, &cubemapTexture);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
+	// Texture settings
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	// These are very important to prevent seams
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-	// This might help with seams on some systems
 	glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
 	// Cycles through all the textures and attaches them to the cubemap object
 	// Cubemaps start in top left corner not bottom left corner
@@ -248,6 +242,14 @@ int main() {
 	glfwSwapInterval(1);
 	glEnable(GL_DEPTH_TEST);
 
+	// Enables the Depth Buffer
+	glEnable(GL_DEPTH_TEST);
+
+	// Enables Cull Facing
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_FRONT);
+	glFrontFace(GL_CCW);
+
 	// Camera! //
 	Camera camera(windowWidth, windowHeight, glm::vec3(0.0f, 0.0f, 2.0f));
 
@@ -261,6 +263,7 @@ int main() {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		// Uniforms! //
+		// None so far
 
 		// Camera
 		float minSteps = 0.1f;
@@ -278,14 +281,15 @@ int main() {
 		skyboxShader.Activate();
 		glm::mat4 view = glm::mat4(1.0f);
 		glm::mat4 projection = glm::mat4(1.0f);
-		// We make the mat4 into a mat3 and then a mat4 again in order to get rid of the last row and column
-		// The last row and column affect the translation of the skybox (which we don't want to affect)
+		// "We make the mat4 into a mat3 and then a mat4 again in order to get rid of the last row and column
+		// The last row and column affect the translation of the skybox (which we don't want to affect)" Source: https://github.com/VictorGordan/opengl-tutorials
 		view = glm::mat4(glm::mat3(glm::lookAt(camera.Position, camera.Position + camera.Orientation, camera.Up)));
 		projection = glm::perspective(glm::radians(fov), (float)windowWidth / windowHeight, minSteps, maxSteps);
 		glUniformMatrix4fv(glGetUniformLocation(skyboxShader.ID, "view"), 1, GL_FALSE, glm::value_ptr(view));
 		glUniformMatrix4fv(glGetUniformLocation(skyboxShader.ID, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
-		// Draws the cubemap as the last object so we can save a bit of performance by discarding all fragments
-		// where an object is present (a depth of 1.0f will always fail against any object's depth value)
+		// "Draws the cubemap as the last object so we can save a bit of performance by discarding all fragments
+		// where an object is present (a depth of 1.0f will always fail against any object's depth value)"
+		// Bind VAO and draw elements as cube
 		glBindVertexArray(skyboxVAO);
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);

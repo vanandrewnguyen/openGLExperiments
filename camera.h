@@ -22,12 +22,12 @@ class Camera {
 		// Basic lock to prevent camera jumping around
 		bool firstClick = true;
 
-		// Stores the width and height of the window
+		// Window width and height
 		int width;
 		int height;
 
 		// Speed and sensitivity of camera when panning
-		float speed = 0.1f;
+		float speed = 0.05f;
 		float sensitivity = 100.0f;
 
 		// Camera constructor 
@@ -37,7 +37,7 @@ class Camera {
 		void updateMatrix(float FOVDeg, float nearPlane, float farPlane);
 		void Matrix(Shader& shader, const char* uniform);
 		
-		// Handles camera inputs
+		// Handles camera inputs i.e. movement and panning
 		void Inputs(GLFWwindow* window);
 };
 #endif

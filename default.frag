@@ -1,62 +1,51 @@
 #version 330 core
+// Output a pixel colour
 out vec4 FragColor;
-in vec3 currPos; // the input variable from the vertex shader (same name and same type)
+// Input variables
+in vec3 currPos; 
 in vec3 Normal;
 in vec3 color; 
 in vec2 texCoord;
-
+// Textures
 uniform sampler2D diffuse0;
 uniform sampler2D specular0;
 uniform sampler2D normal0;
 uniform sampler2D displacement0;
+// Other Uniforms
 uniform vec4 lightColor;
 uniform vec3 lightPos;
 uniform vec3 camPos;
 
-vec4 pointLight(vec3 normal, vec3 lightVec, float lightDis, vec3 lightDir, float ambient, float diffuse, float specularIntensity, int specPow, vec2 UV) {
+vec4 pointLight(vec3 normal, vec3 lightVec, float lightDis, vec3 lightDir, float ambient, float diffuse, float specular, vec2 UV) {
 	// This light dims after a certain extent, which is modulated using intensity with the inverse square law.
 	// Lights objects in all directions equally.
 
 	// Light Eqn, inverse square law
-	float a = 0.2;
+	float a = 0.1;
 	float b = 0.05;
 	float intensity = 1.0f / (a * lightDis * lightDis + b * lightDis + 1.0f);
-
-	vec3 viewDir = normalize(camPos - currPos);
-	vec3 reflectionDir = reflect(-lightDir, normal);
-	float specAmount = pow(max(dot(viewDir, reflectionDir), 0.0f), specPow);
-	float specular = specAmount * specularIntensity;
 
 	float lighting = diffuse * intensity + ambient;
 	return lightColor * (lighting * texture(diffuse0, UV) + (specular * intensity) * texture(specular0, UV).r);
 }
 
-vec4 directionalLight(vec3 normal, vec3 lightVec, float lightDis, vec3 lightDir, float ambient, float diffuse, float specularIntensity, int specPow, vec2 UV) {
+vec4 directionalLight(vec3 normal, vec3 lightVec, float lightDis, vec3 lightDir, float ambient, float diffuse, float specular, vec2 UV) {
 	// This light casts a big light, which simulates rays which are mostly parallel to each other.
 	// Can be used for sunlight / natural light.
 
-	// Lighting //
-	vec3 viewDir = normalize(camPos - currPos);
-	vec3 reflectionDir = reflect(-lightDir, normal);
-	float specAmount = pow(max(dot(viewDir, reflectionDir), 0.0f), specPow);
-	float specular = specAmount * specularIntensity;
-
+	// Unlike the pointLight this does not include intensity, since it's implied to not decay as quickly
 	float lighting = diffuse + ambient;
 	return lightColor * (lighting * texture(diffuse0, UV) + specular * texture(specular0, UV).r);
 }
 
-vec4 spotLight(vec3 normal, vec3 lightVec, float lightDis, vec3 lightDir, float ambient, float diffuse, float specularIntensity, int specPow, vec2 UV) {
+vec4 spotLight(vec3 normal, vec3 lightVec, float lightDis, vec3 lightDir, float ambient, float diffuse, float specular, vec2 UV) {
 	// This light casts a circle of light.
 
+	// Width of inner and outer cone
 	float outerCone = 0.80f;
 	float innerCone = 0.95f;
 
-	// Lighting //
-	vec3 viewDir = normalize(camPos - currPos);
-	vec3 reflectionDir = reflect(-lightDir, normal);
-	float specAmount = pow(max(dot(viewDir, reflectionDir), 0.0f), specPow);
-	float specular = specAmount * specularIntensity;
-
+	// Angle and intensity of light
 	float angle = dot(vec3(0.0f, -1.0f, 0.0f), -lightDir);
 	float intensity = clamp((angle - outerCone) / (innerCone - outerCone), 0.0f, 1.0f);
 
@@ -79,10 +68,13 @@ void main() {
 	// Specular
 	float specularIntensity = 0.5f;
 	int specPow = 64;
+	vec3 viewDir = normalize(camPos - currPos);
+	vec3 reflectionDir = reflect(-lightDir, normal);
+	float specAmount = pow(max(dot(viewDir, reflectionDir), 0.0f), specPow);
+	float specular = specAmount * specularIntensity;
 
 	// Parallax Occlusion Mapping // Source: https://learnopengl.com/Advanced-Lighting/Parallax-Mapping
-	vec3 viewDir = normalize(camPos - currPos);
-	// Variables that control parallax occlusion mapping quality
+	// Precision of occlusion mapping
 	float heightScale = 0.05f;
 	const float minLayers = 8.0f;
     const float maxLayers = 64.0f;
@@ -90,10 +82,8 @@ void main() {
     float numLayers = mix(maxLayers, minLayers, abs(dot(vec3(0.0f, 0.0f, 1.0f), viewDir)));
 	float layerDepth = 1.0f / numLayers;
 	float currentLayerDepth = 0.0f;
-	// Remove the z division if you want less aberated results
-	vec2 S = viewDir.xy / viewDir.z * heightScale; 
-    vec2 deltaUVs = S / numLayers;
-	// Init UV 
+	// The change in UV (refer to math eqn in source)
+    vec2 deltaUVs = viewDir.xy / numLayers;
 	vec2 UV = texCoord;
 	float currentDepthMapValue = 1.0f - texture(displacement0, UV).r;
 	// Loop till the point on the heightmap is "hit"
@@ -108,10 +98,9 @@ void main() {
 	float beforeDepth = 1.0f - texture(displacement0, prevTexCoords).r - currentLayerDepth + layerDepth;
 	float weight = afterDepth / (afterDepth - beforeDepth);
 	UV = prevTexCoords * weight + UV * (1.0f - weight);
-	// Get rid of anything outside the normal range
-	if(UV.x > 1.0 || UV.y > 1.0 || UV.x < 0.0 || UV.y < 0.0) {
-		discard;
-	}
+	// Discard pixels outside of normal colour range
+	if(UV.x > 1.0 || UV.y > 1.0 || UV.x < 0.0 || UV.y < 0.0) { discard; }
 
-	FragColor = pointLight(normal, lightVec, lightDis, lightDir, ambient, diffuse, specularIntensity, specPow, UV);
+	// Output pixel colour
+	FragColor = pointLight(normal, lightVec, lightDis, lightDir, ambient, diffuse, specular, UV);
 }

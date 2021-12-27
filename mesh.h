@@ -8,18 +8,23 @@
 #include"Camera.h"
 #include"Texture.h"
 
+/*
+Mesh object combines all the different textures / cameras / vertex/indices data / shaders into one class for easy calls.
+Abstraction makes it easier to deal with esp with model importing.
+*/
+
 class Mesh {
 	public:
+		// These are defined from main.cpp
 		std::vector <Vertex> vertices;
 		std::vector <GLuint> indices;
 		std::vector <Texture> textures;
-		// Store VAO in public so it can be used in the Draw function
 		VAO VAO;
 
-		// Initializes the mesh
+		// Mesh constructor
 		Mesh(std::vector <Vertex>& vertices, std::vector <GLuint>& indices, std::vector <Texture>& textures);
 
-		// Draws the mesh
+		// Draws the mesh with default values
 		void Draw
 		(
 			Shader& shader,

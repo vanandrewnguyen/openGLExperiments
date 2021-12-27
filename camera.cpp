@@ -1,6 +1,6 @@
 #include"Camera.h"
 
-// COnstructor for the camera object
+// Constructor for the camera object
 Camera::Camera(int width, int height, glm::vec3 position) {
 	Camera::width = width;
 	Camera::height = height;
@@ -55,7 +55,7 @@ void Camera::Inputs(GLFWwindow* window)
 	if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) {
 		speed = 0.2f;
 	} else if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_RELEASE) {
-		speed = 0.05f;
+		speed = 0.025f;
 	}
 
 

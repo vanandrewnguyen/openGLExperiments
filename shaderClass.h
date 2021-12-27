@@ -8,12 +8,16 @@
 #include<iostream>
 #include<cerrno>
 
+/*
+Shader class groups vertex and fragment shader for compilation in mesh.h
+*/
+
 // Grab file name
 std::string get_file_contents(const char* filename);
 
 class Shader {
 	public:
-		// Ref ID for shader object
+		// Reference ID
 		GLuint ID;
 		
 		// Set geometry and pixel shader from file names
@@ -23,6 +27,7 @@ class Shader {
 		void Activate();
 		void Delete();
 	private:
+		// Avoid conflict with future classes
 		void compileErrors(unsigned int shader, const char* type);
 };
 
